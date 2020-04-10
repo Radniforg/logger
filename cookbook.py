@@ -1,6 +1,5 @@
 
 
-cook_book = {}
 keyholder = ['Ingredient_name', 'quantity', 'measure']
 
 #ниже реализована функция оглавления
@@ -11,11 +10,11 @@ def content():
     print(accurate_list)
 
 
-def shop_list(dishes_list, person_amount):
+def shop_list(dishes_list, person_amount, recipe_book):
     to_buy_list = {}
     for dish in dishes_list:
         dish = dish.capitalize()
-        list_to_decompose = cook_book.get(dish, f'Ошибка: такого блюда нет.\n')
+        list_to_decompose = recipe_book.get(dish, f'Ошибка: такого блюда нет.\n')
         if 'Ошибка' in list_to_decompose:
             user_answer = input(' Продолжить y/n?\n')
             if user_answer.lower() == 'y':
@@ -39,20 +38,26 @@ def shop_list(dishes_list, person_amount):
     return to_buy_list
 
 
-with open('recipes.txt', encoding='utf-8') as recipe_book:
-    for line in recipe_book:
-        line = line.lstrip('\ufeff')
-        temporary_list = []
-        for ingredients in range(int(recipe_book.readline())):
-            temporary_dict = {}
-            current_ingredient = recipe_book.readline()
-            recipe_decompose = current_ingredient.split(' | ')
-            recipe_decompose[2] = recipe_decompose[2].rstrip()
-            for cycle in range(3):
-                temporary_dict[keyholder[cycle]] = recipe_decompose[cycle]
-            temporary_list.append(temporary_dict)
-        cook_book[line.strip()] = temporary_list
-        recipe_book.readline()
+def cook_book_writing(recipe_file):
+    cook_book = {}
+    with open(recipe_file, encoding='utf-8') as recipe_book:
+        for line in recipe_book:
+            line = line.lstrip('\ufeff')
+            temporary_list = []
+            for _ in range(int(recipe_book.readline())):
+                temporary_dict = {}
+                current_ingredient = recipe_book.readline()
+                recipe_decompose = current_ingredient.split(' | ')
+                recipe_decompose[2] = recipe_decompose[2].rstrip()
+                for cycle in range(3):
+                    temporary_dict[keyholder[cycle]] = recipe_decompose[cycle]
+                temporary_list.append(temporary_dict)
+            cook_book[line.strip()] = temporary_list
+            recipe_book.readline()
+    return cook_book
+
+#ниже вывод печати для задачи №1
+print(cook_book_writing('recipes.txt'))
 
 #Ниже реализована функция с пользовательским вводом.
 user_input = input('Пожалуйста, введите названия блюд через запятую и пробел. Если вы хотите узнать, какие блюда есть в книге, введите "cnt" без кавычек\n')
@@ -62,7 +67,7 @@ else:
     buy_list = user_input.split(', ')
     try:
         user_amount = int(input('Пожалуйста, введите количество персон:\n'))
-        shop_list(buy_list, user_amount)
+        shop_list(buy_list, user_amount, cook_book_writing('recipes.txt'))
     except ValueError:
         print('Введено не число')
 
