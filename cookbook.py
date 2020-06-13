@@ -1,15 +1,8 @@
-
+from Cook.logger_script import logger
 
 keyholder = ['Ingredient_name', 'quantity', 'measure']
 
-#ниже реализована функция оглавления
-def content():
-    accurate_list = []
-    for key in cook_book.keys():
-        accurate_list.append(key)
-    print(accurate_list)
-
-
+@logger('Log/')
 def shop_list(dishes_list, person_amount, recipe_book):
     to_buy_list = {}
     for dish in dishes_list:
@@ -60,16 +53,13 @@ def cook_book_writing(recipe_file):
 print(cook_book_writing('recipes.txt'))
 
 #Ниже реализована функция с пользовательским вводом.
-user_input = input('Пожалуйста, введите названия блюд через запятую и пробел. Если вы хотите узнать, какие блюда есть в книге, введите "cnt" без кавычек\n')
-if 'cnt' in user_input:
-    content()
-else:
-    buy_list = user_input.split(', ')
-    try:
-        user_amount = int(input('Пожалуйста, введите количество персон:\n'))
-        shop_list(buy_list, user_amount, cook_book_writing('recipes.txt'))
-    except ValueError:
-        print('Введено не число')
+user_input = input('Пожалуйста, введите названия блюд через запятую и пробел\n')
+buy_list = user_input.split(', ')
+try:
+    user_amount = int(input('Пожалуйста, введите количество персон:\n'))
+    shop_list(buy_list, user_amount, cook_book_writing('recipes.txt'))
+except ValueError:
+    print('Введено не число')
 
 #Ниже убрана в комментарии реализация функции с вводом списка блюд и количества персон внутри кода:
 # user_list = []
